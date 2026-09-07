@@ -1,10 +1,6 @@
 #include "main.hpp"
 #include "Arial_ttf.hpp"
 
-// windres icon.rc -O coff -o icon.res
-// g++ -c main.cpp ui.cpp Arial_ttf.hpp -I"C:/SFML-2.5.1/include" -DSFML_STATIC
-// g++ main.o ui.o icon.res -o 3DVectorSim -L"C:/SFML-2.5.1/lib" -lsfml-graphics-s -lsfml-window-s -lsfml-system-s -lopengl32 -lfreetype -lwinmm -lgdi32 -mwindows
-
 std::string float_to_frac(float val) { // this fn was made by claude, dunno how it works
     if (std::abs(val) < 1e-6f) return "0";
 
@@ -132,7 +128,7 @@ sf::Color choose_vec_color(const std::vector<Vector>& vectors) {
         }
         if (!used) return color;
     }
-    return sf::Color::White; // fallback, should never happen since we limit to 6 vectors
+    return sf::Color::White;  // fallback
 }
 
 sf::Color choose_plane_color(const std::vector<Plane>& planes) {
@@ -146,7 +142,7 @@ sf::Color choose_plane_color(const std::vector<Plane>& planes) {
         }
         if (!used) return color;
     }
-    return sf::Color::White; // fallback, should never happen since we limit to 6 vectors
+    return sf::Color::White; // fallback
 }
 
 void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, const std::string cmd, std::string& e_msg, std::string& help_msg) {
@@ -249,16 +245,16 @@ void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, 
             int a, b;
             if (tokens[1][0] == 'v' && tokens[1].length() == 2 && tokens[2][0] == 'v' && tokens[2].length() == 2) {
                 if (std::isdigit(tokens[1][1]) && std::isdigit(tokens[2][1])) {
-                        a = tokens[1][1] - '0';
-                        if (a < 1 || a > vectors.size()) {
-                            e_msg = "Error: index out of range";
-                            return;
-                        }
-                        b = tokens[2][1] - '0';
-                        if (b < 1 || b > vectors.size()) {
-                            e_msg = "Error: index out of range";
-                            return;
-                        }
+                    a = tokens[1][1] - '0';
+                    if (a < 1 || a > vectors.size()) {
+                        e_msg = "Error: index out of range";
+                        return;
+                    }
+                    b = tokens[2][1] - '0';
+                    if (b < 1 || b > vectors.size()) {
+                        e_msg = "Error: index out of range";
+                        return;
+                    }
                 } else {
                     e_msg = "Error: invalid input";
                     return;
@@ -267,8 +263,6 @@ void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, 
                 e_msg = "Error: invalid input";
                 return;
             }
-
-            Vector3 vec = Vector3{};
 
             if (tokens[0] == "add") {
                 vectors[b-1].vec.x += vectors[a-1].vec.x;
@@ -286,6 +280,46 @@ void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, 
         else {
             e_msg = "Error: invalid amount of arguments";
         } 
+    }
+    else if (tokens[0] == "cross") {
+        if (vectors.size() < 6) {
+            if (tokens.size() == 3) {
+                int a, b;
+                if (tokens[1][0] == 'v' && tokens[1].length() == 2 && tokens[2][0] == 'v' && tokens[2].length() == 2) {
+                    if (std::isdigit(tokens[1][1]) && std::isdigit(tokens[2][1])) {
+                        a = tokens[1][1] - '0';
+                        if (a < 1 || a > vectors.size()) {
+                            e_msg = "Error: index out of range";
+                            return;
+                        }
+                        b = tokens[2][1] - '0';
+                        if (b < 1 || b > vectors.size()) {
+                            e_msg = "Error: index out of range";
+                            return;
+                        }
+                    } else {
+                        e_msg = "Error: invalid input";
+                        return;
+                    }
+                } else {
+                    e_msg = "Error: invalid input";
+                    return;
+                }
+
+                float x = vectors[a-1].vec.y * vectors[b-1].vec.z - vectors[a-1].vec.z * vectors[b-1].vec.y;
+                float y = vectors[a-1].vec.z * vectors[b-1].vec.x - vectors[a-1].vec.x * vectors[b-1].vec.z;
+                float z = vectors[a-1].vec.x * vectors[b-1].vec.y - vectors[a-1].vec.y * vectors[b-1].vec.x;
+
+                vectors.push_back(Vector{Vector3{x, y, z}, choose_vec_color(vectors)});
+                e_msg = "";
+            }
+            else {
+                e_msg = "Error: invalid amount of arguments";
+            }
+        }
+        else {
+            e_msg = "Error: too many vectors";
+        }
     }
     else if (tokens[0] == "proj") {
         if (tokens.size() == 3) {
@@ -422,7 +456,20 @@ void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, 
         planes = {};
     }
     else if (tokens[0] == "help" && tokens.size() == 1) {
-        help_msg = "Create New:\n     Vector: 'new vec x y z'\n     Plane: 'new plane vN' / 'new plane vN vM'\nOperations:\n     Adding Vectors: 'add vN vM'\n     Subtracting Vectors: 'sub vN vM'\nProjections:\n     Projecting onto Vector: 'proj vN vM'\n     Projecting onto Plane: 'proj vN pN'\nScaling: 'scale vN scalar'\nNormalization: 'normalize vN'\nClear All: 'clear'\nNote: vN and pN refer to the Nth vector and plane, respectively.";
+        help_msg =  std::string("Create New:\n")
+                   + "  Vector: 'new vec x y z'\n"
+                   + "  Plane: 'new plane vN' / 'new plane vN vM'\n"
+                   + "Operations:\n"
+                   + "  'add vN vM' adds vN to vM\n"
+                   + "  'sub vN vM' subtracts vN from vM\n"
+                   + "  'cross vN vM' crossproduct"
+                   + "Projections:\n"
+                   + "  'proj vN vM' projects vN onto vM\n"
+                   + "  'proj vN pN' projects vN onto pN\n"
+                   + "Scaling: 'scale vN' scalar\n"
+                   + "Normalization: 'normalize vN'\n"
+                   + "Clear All: 'clear'\n"
+                   + "Note: vN and pN refer to the Nth vector and Nth plane, respectively.";
         e_msg = "";
     }
     else {

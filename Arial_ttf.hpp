@@ -1,5 +1,4 @@
 // Auto-generated from Arial.ttf — do not edit by hand.
-#pragma once
 #include <cstddef>
 
 static const unsigned char Arial_ttf[] = {
