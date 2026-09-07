@@ -33,4 +33,4 @@
 - help
 > prints commands
 
-Note: vN and pN refer to the Nth vector and plane, respectively.
+Note: vN and pN refer to the Nth vector and Nth plane, respectively.
