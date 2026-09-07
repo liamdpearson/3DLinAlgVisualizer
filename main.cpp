@@ -1,8 +1,20 @@
 #include "main.hpp"
 #include "Arial_ttf.hpp"
 
+// prints a float plainly, for values the fraction search can't handle
+std::string float_to_dec(float val) {
+    std::stringstream ss;
+    ss << std::setprecision(6) << val;
+    return ss.str();
+}
+
 std::string float_to_frac(float val) { // this fn was made by claude, dunno how it works
+    if (std::isnan(val)) return "NaN";
+    if (std::isinf(val)) return val < 0 ? "-inf" : "inf";
     if (std::abs(val) < 1e-6f) return "0";
+    // above this the continued fraction overflows long long (and there's no
+    // meaningful small fraction up there anyway), so just print the number
+    if (std::abs(val) >= 1e13f) return float_to_dec(val);
 
     bool negative = val < 0;
     double x = std::abs((double)val);
@@ -15,11 +27,16 @@ std::string float_to_frac(float val) { // this fn was made by claude, dunno how 
     double b = x;
 
     for (int i = 0; i < 64; i++) {
+        // b stays under 1e13 here (x is capped above, and frac >= 1e-12 below),
+        // so the cast is always in range
         long long a = (long long)std::floor(b);
+
+        // same test as "k2 > max_denom", but evaluated before the multiply so
+        // it can't overflow long long on the way there
+        if (k1 > 0 && a > (max_denom - k0) / k1) break;
+
         long long h2 = a * h1 + h0;
         long long k2 = a * k1 + k0;
-
-        if (k2 > max_denom) break;
 
         h0 = h1; h1 = h2;
         k0 = k1; k1 = k2;
@@ -30,6 +47,8 @@ std::string float_to_frac(float val) { // this fn was made by claude, dunno how 
         if (frac < 1e-12) break;
         b = 1.0 / frac;
     }
+
+    if (k1 == 0) return float_to_dec(val);  // never emit "n/0"
 
     std::string sign = negative ? "-" : "";
     if (k1 == 1) return sign + std::to_string(h1);
@@ -166,7 +185,7 @@ void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, 
                         float z = std::stof(tokens[4]);
                         vectors.push_back(Vector{Vector3{x, y, z}, choose_vec_color(vectors)});
                         e_msg = "";
-                    } catch (std::invalid_argument e) {
+                    } catch (std::exception e) {
                         e_msg = "Error: invalid vector value input";
                     }
                 }
@@ -462,7 +481,7 @@ void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, 
                    + "Operations:\n"
                    + "  'add vN vM' adds vN to vM\n"
                    + "  'sub vN vM' subtracts vN from vM\n"
-                   + "  'cross vN vM' crossproduct"
+                   + "  'cross vN vM' crossproduct\n"
                    + "Projections:\n"
                    + "  'proj vN vM' projects vN onto vM\n"
                    + "  'proj vN pN' projects vN onto pN\n"

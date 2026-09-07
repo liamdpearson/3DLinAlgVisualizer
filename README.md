@@ -18,6 +18,8 @@
 > adds vector N to M
 - sub vN vM
 > subtracts vector N from M
+- cross vN vM
+> creates new vector from the cross product of vN and vM
 - proj vN vM
 > projects vector N onto vector M
 - proj vN pM

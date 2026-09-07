@@ -5,6 +5,7 @@
 #include <cmath>
 #include <string>
 #include <iomanip>
+#include <sstream>
 #include "ui.hpp"
 
 const int SCREEN_WIDTH = 1000, SCREEN_HEIGHT = 1000;
