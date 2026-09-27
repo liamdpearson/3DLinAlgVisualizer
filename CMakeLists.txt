@@ -20,13 +20,13 @@ set(SFML_BUILD_AUDIO OFF)
 set(SFML_BUILD_NETWORK OFF)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(vecvis
+add_executable(visualizer
     src/main.cpp
     src/vector.cpp
     src/plane.cpp
     src/to_string.cpp
 )
 
-target_compile_definitions(vecvis PRIVATE SFML_STATIC)
-target_link_libraries(vecvis PRIVATE sfml-graphics sfml-window sfml-system)
-target_link_options(vecvis PRIVATE -static-libgcc -static-libstdc++)
+target_compile_definitions(visualizer PRIVATE SFML_STATIC)
+target_link_libraries(visualizer PRIVATE sfml-graphics sfml-window sfml-system)
+target_link_options(visualizer PRIVATE -static-libgcc -static-libstdc++)

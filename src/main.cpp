@@ -442,7 +442,10 @@ void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, 
 
 int main() {
     
-    sf::RenderWindow window(sf::VideoMode({SCREEN_WIDTH, SCREEN_HEIGHT}), "3DVectorSim");
+    sf::RenderWindow window(sf::VideoMode(
+        {SCREEN_WIDTH, SCREEN_HEIGHT}),
+        "3D Linear Algebra Visualizer"
+    );
 
     sf::Font font;
     font.loadFromMemory(Arial_ttf, Arial_ttf_len);
