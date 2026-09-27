@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 
-project(3DVectorSim)
+project(3DVectorVisualizer)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,15 +16,17 @@ FetchContent_Declare(SFML
     GIT_SHALLOW ON
 )
 set(BUILD_SHARED_LIBS OFF)
+set(SFML_BUILD_AUDIO OFF)
+set(SFML_BUILD_NETWORK OFF)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(vecsim
+add_executable(vecvis
     src/main.cpp
     src/vector.cpp
     src/plane.cpp
     src/to_string.cpp
 )
 
-target_compile_definitions(vecsim PRIVATE SFML_STATIC)
-target_link_libraries(vecsim PRIVATE sfml-graphics sfml-window sfml-system)
-target_link_options(vecsim PRIVATE -static-libgcc -static-libstdc++)
+target_compile_definitions(vecvis PRIVATE SFML_STATIC)
+target_link_libraries(vecvis PRIVATE sfml-graphics sfml-window sfml-system)
+target_link_options(vecvis PRIVATE -static-libgcc -static-libstdc++)

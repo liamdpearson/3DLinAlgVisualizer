@@ -327,14 +327,10 @@ void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, 
             float y = vectors[a-1].vec.y;
             float z = vectors[a-1].vec.z;
 
-            std::string x_str = float_to_dec(x);
-            std::string y_str = float_to_dec(y);
-            std::string z_str = float_to_dec(z);
-
-            std::string len_sqrd = float_to_dec(x*x + y*y + z*z);
+            float len_sqrd = x*x + y*y + z*z;
             
             vectors[a-1].vec.normalize();
-            vectors[a-1].text = "(" + x_str + "/sqrt(" + len_sqrd + "), " + y_str + "/sqrt(" + len_sqrd + "), " + z_str + "/sqrt(" + len_sqrd + "))";
+            vectors[a-1].text = "(" + float_to_dec(x/len_sqrd) + ", " + float_to_dec(y/len_sqrd) + ", " + float_to_dec(z/len_sqrd) + ")";
             e_msg = "";
         }
         else {
@@ -347,11 +343,11 @@ void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, 
             float scalar;
             if (tokens[1][0] == 'v' && tokens[1].length() == 2) {
                 if (std::isdigit(tokens[1][1])) {
-                        a = tokens[1][1] - '0';
-                        if (a < 1 || a > vectors.size()) {
-                            e_msg = "Error: index out of range";
-                            return;
-                        }
+                    a = tokens[1][1] - '0';
+                    if (a < 1 || a > vectors.size()) {
+                        e_msg = "Error: index out of range";
+                        return;
+                    }
                 } else {
                     e_msg = "Error: invalid input";
                     return;
@@ -378,6 +374,44 @@ void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, 
             e_msg = "Error: invalid amount of arguments";
         }
     }
+    else if (tokens[0] == "del") {
+        if (tokens.size() == 2) {
+            if (tokens[1][0] == 'v' && tokens[1].length() == 2) {
+                if (std::isdigit(tokens[1][1])) {
+                    int i = tokens[1][1] - '0';
+
+                    if (i < 1 || i > vectors.size()) {
+                        e_msg = "Error: index out of range";
+                        return;
+                    }
+                    vectors.erase(vectors.begin() + i-1);
+                }
+                else {
+                    e_msg = "Error: invalid argument";
+                }
+            }
+            else if (tokens[1][0] == 'p' && tokens[1].length() == 2) {
+                if (std::isdigit(tokens[1][1])) {
+                    int i = tokens[1][1] - '0';
+
+                    if (i < 1 || i > planes.size()) {
+                        e_msg = "Error: index out of range";
+                        return;
+                    }
+                    planes.erase(planes.begin() + i-1);
+                }
+                else {
+                    e_msg = "Error: invalid argument";
+                }
+            }   
+            else {
+                e_msg = "Error: invalid argument";
+            }
+        }
+        else {
+            e_msg = "Error: invalid amount of arguments";
+        }
+    }
     else if (tokens[0] == "clear" && tokens.size() == 1) {
         e_msg = "";
         vectors = {};
@@ -396,6 +430,7 @@ void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, 
                    + "  'proj vN pN' projects vN onto pN\n"
                    + "Scaling: 'scale vN' scalar\n"
                    + "Normalization: 'normalize vN'\n"
+                   + "Delete: 'del vN' / 'del pN'\n"
                    + "Clear All: 'clear'\n"
                    + "Note: vN and pN refer to the Nth vector and Nth plane, respectively.";
         e_msg = "";
@@ -542,7 +577,7 @@ int main() {
 
             sf::Text label(std::to_string(i+1) + ". " + plane.text, font, 14);
             label.setFillColor(plane.color);
-            label.setPosition(sf::Vector2f(50, 115+50*(vectors.size() + i)));
+            label.setPosition(sf::Vector2f(25, 115+50*(vectors.size() + i)));
             window.draw(label);
         }
 
@@ -592,7 +627,7 @@ int main() {
             label.setFillColor(vector.color);
             label.setPosition(tip);
             window.draw(label);
-            label.setPosition(sf::Vector2f(50, 65+50*i));
+            label.setPosition(sf::Vector2f(25, 65+50*i));
             window.draw(label);
         }   
 
