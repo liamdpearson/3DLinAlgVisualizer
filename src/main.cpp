@@ -513,6 +513,11 @@ int main() {
                     cur_command += static_cast<char>(event.text.unicode);
                 }
             }
+
+            else if (event.type == sf::Event::Resized) {
+                unsigned int newSize = std::max(event.size.width, event.size.height);
+                window.setSize(sf::Vector2u(newSize, newSize));
+            }
         }
 
         sf::Vector2i cur_mouse_pos = sf::Mouse::getPosition(window);

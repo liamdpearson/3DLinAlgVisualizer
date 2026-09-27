@@ -1,4 +1,2 @@
 build/
-build-wsl/
-vecsim
-vecsim.exe
+vecvis.exe
