@@ -327,10 +327,10 @@ void handle_cmd_input(std::vector<Vector>& vectors, std::vector<Plane>& planes, 
             float y = vectors[a-1].vec.y;
             float z = vectors[a-1].vec.z;
 
-            float len_sqrd = x*x + y*y + z*z;
+            float length = sqrt(x*x + y*y + z*z);
             
             vectors[a-1].vec.normalize();
-            vectors[a-1].text = "(" + float_to_dec(x/len_sqrd) + ", " + float_to_dec(y/len_sqrd) + ", " + float_to_dec(z/len_sqrd) + ")";
+            vectors[a-1].text = "(" + float_to_dec(x/length) + ", " + float_to_dec(y/length) + ", " + float_to_dec(z/length) + ")";
             e_msg = "";
         }
         else {
