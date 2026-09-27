@@ -1,1 +1,4 @@
-commands.txt
+build/
+build-wsl/
+vecsim
+vecsim.exe
