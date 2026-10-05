@@ -2,6 +2,8 @@
 ![](https://img.shields.io/badge/c++-17-blue)
 ![](https://img.shields.io/badge/SFML-2.5.1-red)
 
+This is not a C project GitHub is just being weird because I linked the SFML repo in the CMakeLists.txt
+
 ## Building on Windows
 
 ### Requirements
