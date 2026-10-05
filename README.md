@@ -12,7 +12,7 @@ This is not a C project GitHub is just being weird because I linked the SFML rep
 ### Requirements
 - CMake 3.16 or newer
 - A MinGW-w64 toolchain
-- Git
+- Git with internet
 
 Make sure CMake, MinGW, Git, and g++ are all on your path
 
