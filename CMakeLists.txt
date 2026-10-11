@@ -20,7 +20,7 @@ set(SFML_BUILD_AUDIO OFF)
 set(SFML_BUILD_NETWORK OFF)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(visualizer
+add_executable(visualizer WIN32
     src/main.cpp
     src/vector.cpp
     src/plane.cpp
