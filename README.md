@@ -4,8 +4,7 @@
 
 This is not a C project GitHub is just being weird because I linked the SFML repo in the CMakeLists.txt
 
-## Download here:
-[Windows](https://github.com/liamdpearson/3DLinAlgVisualizer/releases/download/windows/visualizer.exe)
+[Download for Windows](https://github.com/liamdpearson/3DLinAlgVisualizer/releases/download/windows/visualizer.exe)
 
 ## Demo here:
 [![Demo here:](https://i3.ytimg.com/vi/78GHf8yulrk/hqdefault.jpg)](https://www.youtube.com/watch?v=78GHf8yulrk)
